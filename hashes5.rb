@@ -65,27 +65,24 @@ puts
 #   end
 # end
 
-user_code = user[:room_stays].map do |code|
-  code['external_code']
-  response_hilton['roomRates'].each do |item|
-    next unless item['roomTypeCode'] == code['external_code']
+# user_code = user[:room_stays].map do |code|
+#   code['external_code']
+#   response_hilton['roomRates'].each do |item|
+#     next unless item['roomTypeCode'] == code['external_code']
 
-    details = item['rateDetails']
-    current_rate = details.find { |f| f['effectiveDate'] == dates_ranges.first }
-    current_rate = current_rate ? current_rate['rate1Person'] : 0
+#     details = item['rateDetails']
+#     current_rate = details.find { |f| f['effectiveDate'] == dates_ranges.first }
+#     current_rate = current_rate ? current_rate['rate1Person'] : 0
 
-    room_rates_by_day = dates_ranges.each_with_object([]) do |date, _rates|
-      new_rate_block = details.find { |x| x['effectiveDate'] == date }
-      current_rate = new_rate_block ? new_rate_block['rate1Person'] : current_rate
+#     room_rates_by_day = dates_ranges.each_with_object([]) do |date, _rates|
+#       new_rate_block = details.find { |x| x['effectiveDate'] == date }
+#       current_rate = new_rate_block ? new_rate_block['rate1Person'] : current_rate
 
-      puts current_rate * code['rooms_requested'].to_f
-    end
-    #   item['rateDetails'].each do |room_date|
-    #     puts room_date['rate1Person'].to_f * code['rooms_requested'].to_f if room_date['effectiveDate'] == code['date']
-    #   end
-  end
-  puts
-end
+#       puts current_rate * code['rooms_requested'].to_f
+#     end
+#   end
+#   puts
+# end
 
 # codes = user[:room_stays].map do |code|
 #   code['external_code']
@@ -372,13 +369,25 @@ end
 #     'cacheExpiryTime' => '2021-08-18T18:54:26.693099Z'
 #   }
 
-# codes = user[:room_stays].map do |code|
-#   code['external_code']
-#   response_hilton['roomRates'].each do |rate|
-#     next unless rate['roomTypeCode'] == code['external_code']
+total = {}
 
-#     rate['rateDetails'].each do |room_date|
-#       puts room_date['rate1Person'].to_f * code['rooms_requested'].to_f if room_date['effectiveDate'] == code['date']
-#     end
-#   end
-# end
+codes = user[:room_stays].map do |code|
+  code['external_code']
+  response_hilton['roomRates'].each do |rate|
+    next unless rate['roomTypeCode'] == code['external_code']
+
+    rate['rateDetails'].each do |room_date|
+      next unless room_date['effectiveDate'] == code['date']
+
+      luffy = room_date['rate1Person'].to_f * code['rooms_requested'].to_f
+      if total.has_key?(code['external_code'])
+        total[code['external_code']] += luffy
+      else total[code['external_code']] = luffy
+      end
+      # luffy = room_date['rate1Person'].to_f * code['rooms_requested'].to_f
+      # puts luffy
+    end
+  end
+end
+
+puts total
