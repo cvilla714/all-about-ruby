@@ -380,7 +380,7 @@ response_hilton =
 
 total = {}
 
-codes = user[:room_stays].map do |code|
+user[:room_stays].map do |code|
   code['external_code']
   response_hilton['roomRates'].each do |rate|
     next unless rate['roomTypeCode'] == code['external_code']
@@ -389,7 +389,7 @@ codes = user[:room_stays].map do |code|
       next unless room_date['effectiveDate'] == code['date']
 
       puts luffy = room_date['rate1Person'].to_f * code['rooms_requested'].to_f
-      if total.has_key?(code['external_code'])
+      if total.key?(code['external_code'])
         total[code['external_code']] += luffy
       else total[code['external_code']] = luffy
       end
