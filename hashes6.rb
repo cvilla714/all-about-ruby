@@ -8,6 +8,8 @@ user =
     room_stays: [{ 'room_type_guid' => 'a625dce-248b-4be4-977d-abca7d3891c5', 'rooms_requested' => '5', 'date' => '2021-11-26', 'external_code' => 'K1ERV', 'code' => nil },
                  { 'room_type_guid' => 'a625dce-248b-4be4-977d-abca7d3891c5', 'rooms_requested' => '10', 'date' => '2021-11-27',
                    'external_code' => 'K1ERV', 'code' => nil },
+                 { 'room_type_guid' => 'a625dce-248b-4be4-977d-abca7d3891c5', 'rooms_requested' => '10', 'date' => '2021-11-28',
+                   'external_code' => 'K1ERV', 'code' => nil },
                  { 'room_type_guid' => 'ae625dce-248b-4be4-977d-abca7d3891c5', 'rooms_requested' => '10', 'date' => '2021-11-30',
                    'external_code' => 'K1ERV', 'code' => nil },
                  { 'room_type_guid' => '35d03fed-85fa-4de3-a6d8-16516735442b', 'rooms_requested' => '10', 'date' => '2021-11-26',
@@ -61,7 +63,6 @@ response_hilton =
 # puts initial_date = Date.parse(user[:arrival])
 # puts initial_date + 1
 
-total = {}
 total2 = []
 user[:room_stays].map do |code|
   code['external_code']
@@ -73,6 +74,7 @@ user[:room_stays].map do |code|
 
       luffy = room_date['rate1Person'].to_f * code['rooms_requested'].to_f
       total2.push({ dates: code['date'], sum: luffy })
+      #   total.push({ external_code: code['external_code'], arrival: user[:arrival], departure: user[:departure] })
 
       #   if total.key?(code['external_code'])
       #     total[code['external_code']] += luffy
@@ -81,7 +83,7 @@ user[:room_stays].map do |code|
     end
   end
 end
-puts total
+
 puts total2
 
 total2.each.with_index do |bola, index|
@@ -98,4 +100,6 @@ total2.each.with_index do |bola, index|
   puts
 end
 
+date_start = Date.parse('2021/11/26')
+puts date_start.day
 # {"K1ERV": [{"arrival": "2021-11-26", "departure": "2021-11-28", "base_cost": 1458 + 2727}, {"arrival": "2021-11-30", "departure": "2021-11-31", "base_cost": 2948.39999}], "K1ERV1": [same thing for that room type]}
