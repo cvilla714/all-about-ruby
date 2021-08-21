@@ -103,3 +103,40 @@ end
 date_start = Date.parse('2021/11/26')
 puts date_start.day
 # {"K1ERV": [{"arrival": "2021-11-26", "departure": "2021-11-28", "base_cost": 1458 + 2727}, {"arrival": "2021-11-30", "departure": "2021-11-31", "base_cost": 2948.39999}], "K1ERV1": [same thing for that room type]}
+
+def catch_cons(arr, consArr = [])
+  arr.each.with_index do |item, index|
+    puts item[:date]
+    puts nextItem = index < arr.size - 1 ? arr[index + 1][:date] : 0
+    if (item[:date] + 1) == nextItem
+      ending = group_cons(arr, index, consArr)
+      arr.slice!(index, ending)
+    else
+      consArr.push(item)
+      arr.delete_at(index)
+    end
+    print 'new arr: '
+    pp arr
+    puts
+    catch_cons(arr, consArr)
+    puts
+  end
+  consArr
+end
+
+def group_cons(arr, index, consArr)
+  res = []
+  arr[index..-1].map.with_index do |item2, index2|
+    nextItem2 = (index + index2) < arr.size - 1 ? arr[index + index2 + 1][:date] : 0
+    res.push(item2)
+    if item2[:date] + 1 == nextItem2
+    else
+      break
+    end
+  end
+  print 'res: '
+  pp res
+  consArr.push(res)
+  res.size
+end
+pp catch_cons(arr)
