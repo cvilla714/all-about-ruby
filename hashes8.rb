@@ -95,6 +95,7 @@ user[:room_stays].map do |code|
   end
 end
 
+puts arr
 # {"K1ERV": [{"arrival": "2021-11-26", "departure": "2021-11-28", "base_cost": 1458 + 2727}, {"arrival": "2021-11-30", "departure": "2021-11-31", "base_cost": 2948.39999}], "K1ERV1": [same thing for that room type]}
 
 def catch_cons(arr, consArr = [])
@@ -157,7 +158,7 @@ def group_cons(arr, index, consArr)
       break
     end
   end
-  print 'res: '
+  # print 'res: '
   # puts "this is are the elements insde #{res}"
   res.each do |vol|
     # puts "i am priting vol #{vol}"
@@ -171,13 +172,21 @@ def group_cons(arr, index, consArr)
     codes.push(vol[:room_code])
     # puts dates
   end
+
   llego = dates.shift
-  puts "this is the arrival date #{llego}"
+  # puts "this is the arrival date #{llego}"
   sefue = dates.pop
-  puts "this is the departure date #{Date.parse(sefue) + 1}"
+  # puts "this is the departure date #{Date.parse(sefue) + 1}"
   tot_suma = tot.reduce(:+)
-  puts "this is the total #{tot_suma}"
-  consArr.push(res)
+  # puts "this is the total #{tot_suma}"
+  # consArr.push(res)
+  consArr.push({ room_type: codes[0], arrival: llego, departure: (Date.parse(sefue) + 1).to_s, total_sum: tot_suma })
+  # consArr.push({ room_type: codes = {
+  #                arrival: llego,
+  #                departure: (Date.parse(sefue) + 1).to_s,
+  #                total_sum: tot_suma
+
+  #              } })
   # puts "i am pritning here #{consArr}"
 
   res.size
