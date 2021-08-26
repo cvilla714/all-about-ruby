@@ -120,46 +120,68 @@ response_hilton =
       { 'rate1PersonTaxes' => 5.0, 'effectiveDate' => '2021-12-06', 'rate1Person' => 485.0, 'rate2Person' => 455.0,
         'rate3Person' => 500.5, 'rate4Person' => 546.0 }] }] }
 
-arr = {}
-user[:room_stays].map do |code|
-  code['external_code']
-  response_hilton['roomRates'].each do |rate|
-    next unless rate['roomTypeCode'] == code['external_code']
+# response_hilton['roomRates'] do |item|
+#   puts item
+# end
 
-    rate['rateDetails'].each do |room_date|
-      next unless room_date['effectiveDate'] == code['date']
+def calc_result(user, response_hilton)
+  arr = {}
+  user[:room_stays].map do |code|
+    code['external_code']
+    response_hilton['roomRates'].each do |rate|
+      next unless rate['roomTypeCode'] == code['external_code']
 
-      luffy = room_date['rate1Person'].to_f * code['rooms_requested'].to_f
+      rate['rateDetails'].each do |room_date|
+        next unless room_date['effectiveDate'] == code['date']
 
-      if !arr[code['external_code']]
-        arr[code['external_code']] = [{ dates: code['date'], sum: luffy }]
-      else
-        arr[code['external_code']].push({ dates: code['date'], sum: luffy })
+        luffy = room_date['rate1Person'].to_f * code['rooms_requested'].to_f
+
+        if !arr[code['external_code']]
+          arr[code['external_code']] =
+            [{ rate_plan: response_hilton['ratePlanCode'], dates: code['date'], sum: luffy,
+               peak_rooms: user[:peak_rooms], prop_code: response_hilton['propCode'] }]
+        else
+          arr[code['external_code']].push({ rate_plan: response_hilton['ratePlanCode'], dates: code['date'], sum: luffy,
+                                            peak_rooms: user[:peak_rooms], prop_code: response_hilton['propCode'] })
+        end
       end
     end
   end
+  arr
 end
 
-# puts arr
 # {"K1ERV": [{"arrival": "2021-11-26", "departure": "2021-11-28", "base_cost": 1458 + 2727}, {"arrival": "2021-11-30", "departure": "2021-11-31", "base_cost": 2948.39999}], "K1ERV1": [same thing for that room type]}
 
 def catch_cons(arr, consArr = [])
   arr.each do |room_code, stay_arr|
+    # puts "this ar the codes #{room_code}"
+    # puts "thi is what stay_arr containts #{stay_arr}"
     base_rate = 0
     dates = []
     stay_arr.each do |stay|
+      #   puts "this are each element of stay_ar #{stay}"
+      rate_plan = stay[:rate_plan]
+      prop_code = stay[:prop_code]
       date = stay[:dates]
+      #   puts "here are the dates #{date}"
       dates.push(date)
+      #   puts "what we have her is the new array #{dates}"
       base_rate += stay[:sum]
+      #   puts "adding the value #{base_rate}"
       next_day = (Date.parse(date) + 1).to_s
+      #   puts "this is the next day #{next_day}"
       # puts "i am the next day #{next_day}"
       all_dates = stay_arr.map { |x| x[:dates] }
+      #   puts "priting all dates from the main object #{all_dates}"
       if all_dates.include?(next_day)
         next
       else
-        departure = next_day
         arrival = dates.min
-        consArr.push({ code: room_code, arrival: arrival, departure: departure, total_sum: base_rate })
+        # puts "this is the arrival day #{arrival}"
+        departure = next_day
+        # puts "this is the departure day #{departure}"
+        consArr.push({ rate_plan: rate_plan, code: room_code, arrival: arrival,
+                       departure: departure, total_sum: base_rate, pro_code: prop_code })
         dates = []
         base_rate = 0
       end
@@ -167,4 +189,24 @@ def catch_cons(arr, consArr = [])
   end
   consArr
 end
-puts catch_cons(arr)
+
+result_of_calc = calc_result(user, response_hilton)
+
+# puts "i am printing the result of the hash right here #{result_of_calc}"
+# puts
+look_at_this_reesult = catch_cons(result_of_calc)
+puts "here is the final calculation #{look_at_this_reesult}"
+
+# def get_values(arr)
+#   catch_cons(arr).each do |code|
+#     puts "you ar here #{code}"
+
+#     code.each do |item|
+#       puts item
+#     end
+#   end
+# end
+# puts "this is whtat i am looking at #{get_values(arr)} "
+# response = get_values(arr)
+# puts "now this is the respose #{response}"
+# puts response['rate_plan']
