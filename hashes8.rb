@@ -1,5 +1,5 @@
 require 'date'
-
+system 'clear'
 user =
   { hotel_code: 'NYCNH',
     property_guid: '448ea118-2394-492f-ac87-b8b186f8eaf3',
@@ -120,7 +120,44 @@ response_hilton =
       { 'rate1PersonTaxes' => 5.0, 'effectiveDate' => '2021-12-06', 'rate1Person' => 485.0, 'rate2Person' => 455.0,
         'rate3Person' => 500.5, 'rate4Person' => 546.0 }] }] }
 
-arr = []
+# arr = []
+# user[:room_stays].map do |code|
+#   code['external_code']
+#   response_hilton['roomRates'].each do |rate|
+#     next unless rate['roomTypeCode'] == code['external_code']
+
+#     rate['rateDetails'].each do |room_date|
+#       next unless room_date['effectiveDate'] == code['date']
+
+#       luffy = room_date['rate1Person'].to_f * code['rooms_requested'].to_f
+#       arr.push({ room_code: code['external_code'], dates: code['date'], sum: luffy })
+#     end
+#   end
+# end
+
+# puts arr
+# hash = {}
+# user[:room_stays].map do |code|
+#   room_code = code['external_code']
+#   if hash.key?(room_code)
+#     hash[room_code].push(code)
+#     response_hilton['roomRates'].each do |rate|
+#       next unless rate['roomTypeCode'] == code['external_code']
+
+#       rate['rateDetails'].each do |room_date|
+#         next unless room_date['effectiveDate'] == code['date']
+
+#         luffy = room_date['rate1Person'].to_f * code['rooms_requested'].to_f
+#         hash[room_code].push({ date: code['date'], sum: luffy })
+#       end
+#     end
+#   else
+#     hash[room_code] = []
+#   end
+# end
+# puts hash
+
+arr = {}
 user[:room_stays].map do |code|
   code['external_code']
   response_hilton['roomRates'].each do |rate|
@@ -129,36 +166,64 @@ user[:room_stays].map do |code|
     rate['rateDetails'].each do |room_date|
       next unless room_date['effectiveDate'] == code['date']
 
-      luffy = room_date['rate1Person'].to_f * code['rooms_requested'].to_f
-      arr.push({ room_code: code['external_code'], dates: code['date'], sum: luffy })
+      puts luffy = room_date['rate1Person'].to_f * code['rooms_requested'].to_f
+
+      if !arr[code['external_code']]
+        arr[code['external_code']] = [{ dates: code['date'], sum: luffy }]
+      else
+        arr[code['external_code']].push({ dates: code['date'], sum: luffy })
+      end
     end
   end
 end
 
-puts arr
+# puts arr
 # {"K1ERV": [{"arrival": "2021-11-26", "departure": "2021-11-28", "base_cost": 1458 + 2727}, {"arrival": "2021-11-30", "departure": "2021-11-31", "base_cost": 2948.39999}], "K1ERV1": [same thing for that room type]}
 
 def catch_cons(arr, consArr = [])
-  arr.each.with_index do |item, index|
-    # puts item[:dates]
-    nextItem = index < arr.size - 1 ? arr[index + 1][:dates] : '1/1/1900'
-    if (Date.parse(item[:dates]) + 1) == Date.parse(nextItem)
-      ending = group_cons(arr, index, consArr)
-      # puts ending
-      arr.slice!(index, ending)
-    else
-      # puts 'you are here'
-      consArr.push(item)
-      arr.delete_at(index)
+  arr.each do |room_code, stay_arr|
+    base_rate = 0
+    dates = []
+    stay_arr.each do |stay|
+      date = stay[:dates]
+      dates.push(date)
+      base_rate += stay[:sum]
+      next_day = (Date.parse(date) + 1).to_s
+      # puts "i am the next day #{next_day}"
+      all_dates = stay_arr.map { |x| x[:dates] }
+      if all_dates.include?(next_day)
+        next
+      else
+        departure = next_day
+        arrival = dates.min
+        consArr.push({ code: room_code, total_sum: base_rate, arrival: arrival, departure: departure })
+        dates = []
+        base_rate = 0
+      end
     end
+
+    # arr.each.with_index do |item, index|
+    # puts item[:dates]
+    # nextItem = index < arr.size - 1 ? arr[index + 1][:dates] : '1/1/1900'
+    # puts 'only one' if item[:dates].length == 1
+    # if (Date.parse(item[:dates]) + 1) == Date.parse(nextItem)
+    #   ending = group_cons(arr, index, consArr)
+    # puts ending
+    #   arr.slice!(index, ending)
+    # else
+    # puts 'you are here'
+    #   consArr.push(item)
+    #   arr.delete_at(index)
+    # end
     # print 'new arr: '
     # pp arr
     # puts
-    catch_cons(arr, consArr)
+    # catch_cons(arr, consArr)
     # puts
   end
   consArr
 end
+pp catch_cons(arr)
 
 locos = [1458.00, 2500.15, 2727.57]
 # puts locos.reduce(:+)
@@ -167,71 +232,74 @@ sefue = datesdfd.pop
 llego = datesdfd.shift
 # puts llego
 # puts sefue
-def group_cons(arr, index, consArr)
-  res = []
-  tot = []
-  dates = []
-  codes = []
-  # departure = []
-  # arrival = []
-  arr[index..-1].map.with_index do |item2, index2|
-    # puts "this are the dates #{item2[:dates]}"
-    # more_dates = Date.parse(item2[:dates])
-    # puts more_dates
-    # departure.pop(more_dates)
-    # puts departure
-    # puts "this is the room coe #{item2[:room_code]}"
+# def group_cons(arr, index, consArr)
+#   res = []
+#   tot = []
+#   dates = []
+#   codes = []
+# departure = []
+# arrival = []
+# arr[index..-1].map.with_index do |item2, index2|
+# puts "this are the dates #{item2[:dates]}"
+# more_dates = Date.parse(item2[:dates])
+# puts more_dates
+# departure.pop(more_dates)
+# puts departure
+# puts "this is the room coe #{item2[:room_code]}"
 
-    # puts "this is #{item2}"
-    # puts "this is index2 #{index2}"
-    # tot.push(item2[:sum])
-    # tot_sum = tot.reduce(:+)
-    # puts tot_sum
-    # tota_sum = (item2[:sum]).reduce(:+)
-    # puts tota_sum
-    nextItem2 = (index + index2) < arr.size - 1 ? arr[index + index2 + 1][:dates] : '1/1/1900'
-    # puts nextItem2
-    res.push(item2)
-    # res.push({room_code:item2[:room_code],arrival:
-    if Date.parse(item2[:dates]) + 1 == Date.parse(nextItem2)
-    else
-      break
-    end
-  end
-  # print 'res: '
-  # puts "this is are the elements insde #{res}"
-  res.each do |vol|
-    # puts "i am priting vol #{vol}"
-    tot.push(vol[:sum])
-    # tot_sum = tot.reduce(:+)
-    # puts tot_sum
-    # departure.push(vol[:dates])
-    # sefue = departure.pop
-    # puts "ahora se fue #{sefue}"
-    dates.push(vol[:dates])
-    codes.push(vol[:room_code])
-    # puts dates
-  end
+# puts "this is #{item2}"
+# puts "this is index2 #{index2}"
+# tot.push(item2[:sum])
+# tot_sum = tot.reduce(:+)
+# puts tot_sum
+# tota_sum = (item2[:sum]).reduce(:+)
+# puts tota_sum
+# nextItem2 = (index + index2) < arr.size - 1 ? arr[index + index2 + 1][:dates] : '1/1/1900'
+# puts nextItem2
+# res.push(item2)
+# res.push({room_code:item2[:room_code],arrival:
+#   if Date.parse(item2[:dates]) + 1 == Date.parse(nextItem2)
+#   else
+#     break
+#   end
+# end
+# print 'res: '
+# puts "this is are the elements insde #{res}"
+# res.each do |vol|
+# puts "i am priting vol #{vol}"
+# tot.push(vol[:sum])
+# tot_sum = tot.reduce(:+)
+# puts tot_sum
+# departure.push(vol[:dates])
+# sefue = departure.pop
+# puts "ahora se fue #{sefue}"
+# dates.push(vol[:dates])
+# codes.push(vol[:room_code])
+# puts dates
+# end
 
-  llego = dates.shift
-  # puts "this is the arrival date #{llego}"
-  sefue = dates.pop
-  # puts "this is the departure date #{Date.parse(sefue) + 1}"
-  tot_suma = tot.reduce(:+)
-  # puts "this is the total #{tot_suma}"
-  # consArr.push(res)
-  consArr.push({ room_type: codes[0], arrival: llego, departure: (Date.parse(sefue) + 1).to_s, total_sum: tot_suma })
-  # consArr.push({ room_type: codes = {
-  #                arrival: llego,
-  #                departure: (Date.parse(sefue) + 1).to_s,
-  #                total_sum: tot_suma
+# llego = dates.shift
+# puts "this is the arrival date #{llego}"
+# puts 'we only have one ' if dates.length == 1
+# puts dates
+# sefue = dates.pop
 
-  #              } })
-  # puts "i am pritning here #{consArr}"
+# puts "this is the departure date #{Date.parse(sefue) + 1}"
+# tot_suma = tot.reduce(:+)
+# puts "this is the total #{tot_suma}"
+# consArr.push(res)
+# consArr.push({ room_type: codes[0], arrival: llego, departure: (Date.parse(sefue) + 1).to_s, total_sum: tot_suma })
+# consArr.push({ room_type: codes = {
+#                arrival: llego,
+#                departure: (Date.parse(sefue) + 1).to_s,
+#                total_sum: tot_suma
 
-  res.size
-end
-pp catch_cons(arr)
+#              } })
+# puts "i am pritning here #{consArr}"
+
+#   res.size
+# end
+# pp catch_cons(arr)
 
 # accumulator = 0
 # catch_cons(arr)[0].each_with_index do |x, _idx|
