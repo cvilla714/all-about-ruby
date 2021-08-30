@@ -135,14 +135,15 @@ def calc_result(user, response_hilton)
         next unless room_date['effectiveDate'] == code['date']
 
         luffy = room_date['rate1Person'].to_f * code['rooms_requested'].to_f
+        room_count = code['rooms_requested'].to_i
 
         if !arr[code['external_code']]
           arr[code['external_code']] =
             [{ rate_plan: response_hilton['ratePlanCode'], dates: code['date'], sum: luffy,
-               peak_rooms: user[:peak_rooms], prop_code: response_hilton['propCode'] }]
+               room_count: room_count, prop_code: response_hilton['propCode'] }]
         else
           arr[code['external_code']].push({ rate_plan: response_hilton['ratePlanCode'], dates: code['date'], sum: luffy,
-                                            peak_rooms: user[:peak_rooms], prop_code: response_hilton['propCode'] })
+                                            room_count: room_count, prop_code: response_hilton['propCode'] })
         end
       end
     end
@@ -157,9 +158,11 @@ def catch_cons(arr, consArr = [])
     # puts "this ar the codes #{room_code}"
     # puts "thi is what stay_arr containts #{stay_arr}"
     base_rate = 0
+    rooms_requested = 0
     dates = []
     stay_arr.each do |stay|
-      #   puts "this are each element of stay_ar #{stay}"
+      # puts "this are each element of stay_ar #{stay}"
+
       rate_plan = stay[:rate_plan]
       prop_code = stay[:prop_code]
       date = stay[:dates]
@@ -167,7 +170,10 @@ def catch_cons(arr, consArr = [])
       dates.push(date)
       #   puts "what we have her is the new array #{dates}"
       base_rate += stay[:sum]
-      #   puts "adding the value #{base_rate}"
+      # puts "adding the value #{base_rate}"
+      rooms_requested += stay[:room_count]
+      # puts "now this is the current total of rooms requested so far for the date #{rooms_requested}"
+      # puts
       next_day = (Date.parse(date) + 1).to_s
       #   puts "this is the next day #{next_day}"
       # puts "i am the next day #{next_day}"
@@ -185,12 +191,12 @@ def catch_cons(arr, consArr = [])
         # puts "this is the arrival day #{arrival}"
         departure = next_day
         range_of_dates = (Date.parse(departure) - Date.parse(arrival)).to_i
-        puts
-        puts "this is the range of dates for each request #{range_of_dates}"
+        # puts "this is the range of dates for each request #{range_of_dates}"
         consArr.push({ rate_plan: rate_plan, code: room_code, arrival: arrival,
-                       departure: departure, total_sum: base_rate, total_sum_average: base_rate / range_of_dates, pro_code: prop_code })
+                       departure: departure, total_sum: (base_rate).round(3), total_sum_average: (base_rate / range_of_dates).round(3), weighted_average_rate: ((base_rate / range_of_dates) / rooms_requested).round(3), pro_code: prop_code })
         dates = []
         base_rate = 0
+        rooms_requested = 0
       end
     end
   end
@@ -198,6 +204,8 @@ def catch_cons(arr, consArr = [])
 end
 
 result_of_calc = calc_result(user, response_hilton)
+total_sum_average1 = 2337.3333333333335
+# puts total_sum_average1.round(2)
 
 # puts "printing here #{result_of_calc}"
 # puts
