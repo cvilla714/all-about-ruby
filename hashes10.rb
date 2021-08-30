@@ -171,6 +171,11 @@ def catch_cons(arr, consArr = [])
       next_day = (Date.parse(date) + 1).to_s
       #   puts "this is the next day #{next_day}"
       # puts "i am the next day #{next_day}"
+      # start_date = Date.parse(dates.min)
+      # puts "this is the start date #{start_date}"
+
+      # range_of_dates = (Date.parse(next_day) - Date.parse(dates.min)).count
+      # puts "here we have the range of dates for each request #{range_of_dates}"
       all_dates = stay_arr.map { |x| x[:dates] }
       #   puts "priting all dates from the main object #{all_dates}"
       if all_dates.include?(next_day)
@@ -179,9 +184,11 @@ def catch_cons(arr, consArr = [])
         arrival = dates.min
         # puts "this is the arrival day #{arrival}"
         departure = next_day
-        # puts "this is the departure day #{departure}"
+        range_of_dates = (Date.parse(departure) - Date.parse(arrival)).to_i
+        puts
+        puts "this is the range of dates for each request #{range_of_dates}"
         consArr.push({ rate_plan: rate_plan, code: room_code, arrival: arrival,
-                       departure: departure, total_sum: base_rate, pro_code: prop_code })
+                       departure: departure, total_sum: base_rate, total_sum_average: base_rate / range_of_dates, pro_code: prop_code })
         dates = []
         base_rate = 0
       end
@@ -192,7 +199,7 @@ end
 
 result_of_calc = calc_result(user, response_hilton)
 
-# puts "i am printing the result of the hash right here #{result_of_calc}"
+# puts "printing here #{result_of_calc}"
 # puts
 look_at_this_reesult = catch_cons(result_of_calc)
 puts "here is the final calculation #{look_at_this_reesult}"
