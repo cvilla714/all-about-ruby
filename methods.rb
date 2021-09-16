@@ -49,4 +49,14 @@ max_num = gets.chomp.to_i
 
 max_nuber(max_num)
 
+def say_hello
+  puts 'Hello to you'
+end
 
+say_hello
+
+def say(things_to_say)
+  puts things_to_say
+end
+
+say('You are doing better')
