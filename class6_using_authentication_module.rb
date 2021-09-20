@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 system 'clear'
 
 require_relative 'class5_creating_module'
