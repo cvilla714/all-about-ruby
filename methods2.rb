@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 system 'clear'
 
 def multiply_numbers(first_number, second_number)

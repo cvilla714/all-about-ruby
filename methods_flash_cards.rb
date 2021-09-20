@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 system 'clear'
 
 def flash_card_game
@@ -5,13 +7,14 @@ def flash_card_game
   puts 'which card would you like? (add|substract|multiply|divide)'
   game = gets.chomp.downcase
 
-  if game == 'add'
+  case game
+  when 'add'
     add_numbers
-  elsif game == 'substract'
+  when 'substract'
     substract_numbers
-  elsif game == 'multiply'
+  when 'multiply'
     multiply_numbers
-  elsif game == 'divide'
+  when 'divide'
     divide_numbers
   else
     puts 'Sorry i did not recognize your selectiong please hit enter to re start the game'
@@ -37,9 +40,10 @@ def add_numbers
   puts 'Would you like to play again (y|n|restart)'
 
   options = gets.chomp.downcase
-  if options == 'y'
+  case options
+  when 'y'
     add_numbers
-  elsif options == 'n'
+  when 'n'
     exit
   else
     flash_card_game
@@ -63,9 +67,10 @@ def substract_numbers
   puts 'Would you like to play again (y|n|restart)'
 
   options = gets.chomp.downcase
-  if options == 'y'
+  case options
+  when 'y'
     substract_numbers
-  elsif options == 'n'
+  when 'n'
     exit
   else
     flash_card_game
@@ -89,9 +94,10 @@ def multiply_numbers
   puts 'Would you like to play again (y|n|restart)'
 
   options = gets.chomp.downcase
-  if options == 'y'
+  case options
+  when 'y'
     multiply_numbers
-  elsif options == 'n'
+  when 'n'
     exit
   else
     flash_card_game
@@ -115,9 +121,10 @@ def divide_numbers
   puts 'Would you like to play again (y|n|restart)'
 
   options = gets.chomp.downcase
-  if options == 'y'
+  case options
+  when 'y'
     divide_numbers
-  elsif options == 'n'
+  when 'n'
     exit
   else
     flash_card_game

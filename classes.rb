@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 system 'clear'
 
 class Square
@@ -24,7 +26,7 @@ class Square
   def draw
     puts '*' * @square_length
     (@square_length - 2).times do
-      print '*' + (' ' * (@square_length - 2)) + "*\n"
+      print "*#{' ' * (@square_length - 2)}*\n"
     end
     puts '*' * @square_length
   end

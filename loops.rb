@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 system 'clear'
 
 # works the same as the if statement

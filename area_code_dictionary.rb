@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 system 'clear'
 # 1. Create a dictionary (hash) with 10 city names, where the city name (key) will be a string, and the area code would be the value, an example is given in the resources in the project video
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 user =
   { hotel_code: 'NYCNH',
     property_guid: '448ea118-2394-492f-ac87-b8b186f8eaf3',

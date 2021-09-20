@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 system 'clear'
 print 'moving out'
 puts 'Hello World!'
@@ -26,7 +28,7 @@ anime = gets.chomp
 
 puts "You said you like #{anime}"
 
-puts 'using single quotes will not work with interpolated strings check this out #{first_name} and #{last_name}'
+puts "using single quotes will not work with interpolated strings check this out #{first_name} and #{last_name}"
 
 sentence = 'Welcoome to the jungle'
 puts sentence

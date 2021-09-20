@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 system 'clear'
 my_details = { 'name' => 'mashrur', 'favcolor' => 'red' }
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 system 'clear'
 
 # replicate the Fizzbuzz games
@@ -6,11 +8,11 @@ system 'clear'
 end
 
 (1..100).each do |number|
-  if number % 3 == 0 && number % 5 == 0
+  if (number % 3).zero? && (number % 5).zero?
     puts "#{number} FIZZBUZZ"
-  elsif number % 3 == 0
+  elsif (number % 3).zero?
     puts "#{number} FIZZ"
-  elsif number % 5 == 0
+  elsif (number % 5).zero?
     puts "#{number} BUZZ"
   else
     puts "#{number}."

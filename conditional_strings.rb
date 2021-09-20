@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 system 'clear'
 
 print 'please give me your name '

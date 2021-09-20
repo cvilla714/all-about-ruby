@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 system 'clear'
 class User
   attr_accessor :first_name, :last_name, :username, :email, :password

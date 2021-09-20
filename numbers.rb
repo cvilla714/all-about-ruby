@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 system 'clear'
 
 puts 10 * 3

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 system 'clear'
 # users array where username and password are stored
 users = [

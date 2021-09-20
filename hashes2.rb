@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 response = {
 
   "property_guid": 'bd2907b3-15a6-496a-8470-ed799a49cd98',

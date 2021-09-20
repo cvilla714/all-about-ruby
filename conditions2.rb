@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 system 'clear'
 
 puts 'Please give me a name'

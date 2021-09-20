@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 system 'clear'
 
 pirate_king_crew = {

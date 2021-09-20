@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 system 'clear'
 
 def multiply_numbers(first_number, second_number)
@@ -30,18 +32,19 @@ user_selection = gets.chomp.to_i
 puts "the numbers  you provided were  #{first_number} and #{second_number} and the operation you choose was #{user_selection}."
 puts
 
-if user_selection == 1
+case user_selection
+when 1
   puts "the result of adding #{first_number} and #{second_number} is #{adding_numbers(first_number, second_number)}"
-elsif user_selection == 2
+when 2
   puts "ther result of multiplication between #{first_number} and #{second_number} is #{multiply_numbers(first_number,
                                                                                                          second_number)}"
-elsif user_selection == 3
+when 3
   puts "ther result of dividing  between #{first_number} and #{second_number} is #{divide_numbers(first_number,
                                                                                                   second_number)}"
-elsif user_selection == 4
+when 4
   puts "ther result of substracting  #{first_number} and #{second_number} is #{substract_numbers(first_number,
                                                                                                  second_number)}"
-elsif user_selection == 5
+when 5
   puts "ther result of applying modular  between #{first_number} and #{second_number} is #{modulo_number(first_number,
                                                                                                          second_number)}"
 else
